@@ -1,1 +1,1 @@
-web: dealer
+web: dealer.exe
