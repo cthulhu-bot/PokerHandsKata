@@ -4,8 +4,8 @@ import (
     "github.com/coocood/jas"
     "fmt"
     "net/http"
-    "html"
-    "log"
+//    "html"
+//    "log"
 )
 
 type Hello struct {}
@@ -20,18 +20,16 @@ func (*Hello) Get (ctx *jas.Context) { // GET /v1/hello
 func main() {
     fmt.Println("listening...")
 //    http.Handler("/foo", fooHandler)
-    http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-    })
+//    http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
+//        fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+//    })
 
-    log.Fatal(http.ListenAndServe(":8080", nil))
+//    log.Fatal(http.ListenAndServe(":8080", nil))
 
-/*
     router := jas.NewRouter(new(Hello))
     router.BasePath = "/v1/"
     fmt.Println(router.HandledPaths(true))
     //output: GET /v1/hello
     http.Handle(router.BasePath, router)
     http.ListenAndServe(":8080", nil)
-*/
 }
