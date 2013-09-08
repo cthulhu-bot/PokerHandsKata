@@ -4,6 +4,7 @@ import (
     "github.com/coocood/jas"
     "fmt"
     "net/http"
+    "os"
 //    "html"
 //    "log"
 )
@@ -31,5 +32,8 @@ func main() {
     fmt.Println(router.HandledPaths(true))
     //output: GET /v1/hello
     http.Handle(router.BasePath, router)
-    http.ListenAndServe(":8080", nil)
+    err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+    if err != nil {
+        panic(err)
+    }
 }
