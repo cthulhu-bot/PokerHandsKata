@@ -5,7 +5,7 @@ import (
     "github.com/coocood/jas"
     "fmt"
     "net/http"
-//    "os"
+    "os"
     "math/rand"
     "strconv"
     "time"
@@ -40,12 +40,17 @@ func (*Hands) Get (ctx *jas.Context) {
 // Response: {data:multiple_poker_hands,error:null}
 func (*HandsId) Get (ctx *jas.Context) {
     var Players []*Player
+    numHands := ctx.Id
 
     cards := []string{"2H"}
+
     user := &Player{Player: "Frank", Hand: cards}
-    user2 := &Player{Player: "Fritz", Hand: cards}
-    Players = append(Players, user)
-    Players = append(Players, user2)
+    for i := 0; i < int(numHands); i++ {
+        user := &Player{Player: "Frank", Hand: cards}
+        Players = append(Players, user)
+    }
+//    user2 := &Player{Player: "Fritz", Hand: cards}
+//    Players = append(Players, user2)
 
     b, err := json.Marshal(user)
     fmt.Println(string(b))
@@ -55,7 +60,6 @@ func (*HandsId) Get (ctx *jas.Context) {
 //    d.init()
 //    var deck = strings.Join(d.Cards, ",")
 
-//    numHands := ctx.Id
 
     if err != nil {
         log.Println(err)
@@ -95,10 +99,10 @@ func main() {
 //    http.HandleFunc("/foo/", handler)
 
     // PRODUCTION: port detection added for Heroku's random port assignment
-    //err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+    err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
     // TESTING: Hardcoded port assigned for testing
-    err := http.ListenAndServe(":8080", nil)
+    //err := http.ListenAndServe(":8080", nil)
 
     if err != nil {
         panic(err)
