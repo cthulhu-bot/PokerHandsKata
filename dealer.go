@@ -1,37 +1,42 @@
 package main
 
+// Using rest framework "jas" for routing
 import (
     "github.com/coocood/jas"
     "fmt"
     "net/http"
     "os"
-//    "html"
-//    "log"
+    "math/random"
+    "strconv"
 )
 
 type Hello struct {}
 
-type Deck struct {}
+type PokerHands struct {}
 
-func (*Hello) Get (ctx *jas.Context) { // GET /v1/hello
-    ctx.Data = "hello world"
-    // response: {"data":"hello world","error":null}
+// Request: GET /v1/hello
+// Response: {"data":"hello world","error":null}
+func (*PokerHands) Get (ctx *jas.Context) {
+    myRand := random(1,52)
+    ctx.Data = Itoa(myRand)
+}
+
+func random(min, max int) int {
+    rand.Seed(time.Now().Unix())
+    return rand.Intn(max - min) + min
 }
 
 func main() {
     fmt.Println("listening...")
-//    http.Handler("/foo", fooHandler)
-//    http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
-//        fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-//    })
 
-//    log.Fatal(http.ListenAndServe(":8080", nil))
-
-    router := jas.NewRouter(new(Hello))
+    router := jas.NewRouter(new(PokerHands))
     router.BasePath = "/v1/"
     fmt.Println(router.HandledPaths(true))
+
     //output: GET /v1/hello
     http.Handle(router.BasePath, router)
+
+    // port detection added for Heroku's random port assignment
     err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
     if err != nil {
         panic(err)
