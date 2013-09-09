@@ -9,8 +9,9 @@ import (
     "math/rand"
     "strconv"
     "time"
-    "strings"
+//    "strings"
     "encoding/json"
+    "log"
 )
 
 type Hands struct {}
@@ -38,14 +39,30 @@ func (*Hands) Get (ctx *jas.Context) {
 // Request: GET /hands/number_of_poker_hands
 // Response: {data:multiple_poker_hands,error:null}
 func (*HandsId) Get (ctx *jas.Context) {
+    var Players []*Player
+
+    cards := []string{"2H"}
+    user := &Player{Player: "Frank", Hand: cards}
+    user2 := &Player{Player: "Fritz", Hand: cards}
+    Players = append(Players, user)
+    Players = append(Players, user2)
+
+    b, err := json.Marshal(user)
+    fmt.Println(string(b))
+
 //    myRand := random(1,52)
-    d := new(Deck)
-    d.init()
-    var deck = strings.Join(d.Cards, ",")
+//    d := new(Deck)
+//    d.init()
+//    var deck = strings.Join(d.Cards, ",")
 
 //    numHands := ctx.Id
 
-    ctx.Data = deck
+    if err != nil {
+        log.Println(err)
+        return
+    }
+
+    ctx.Data = Players
 }
 
 func (*Deck) dealAHand() []int {
@@ -66,11 +83,6 @@ func handler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-    cards := []string{"2H"}
-    user := &Player{Player: "Frank", Hand: cards}
-    b, err := json.Marshal(user)
-    fmt.Println(string(b))
-
     fmt.Println("listening...")
 
     router := jas.NewRouter(new(Hands), new(HandsId))
@@ -78,15 +90,15 @@ func main() {
     fmt.Println(router.HandledPaths(true))
 
     //output: GET /hands
-//    http.Handle(router.BasePath, router)
+    http.Handle(router.BasePath, router)
 //    http.Handle(router.BasePath, handler)
-    http.HandleFunc("/foo/", handler)
+//    http.HandleFunc("/foo/", handler)
 
     // PRODUCTION: port detection added for Heroku's random port assignment
     //err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
     // TESTING: Hardcoded port assigned for testing
-    err = http.ListenAndServe(":8080", nil)
+    err := http.ListenAndServe(":8080", nil)
 
     if err != nil {
         panic(err)
