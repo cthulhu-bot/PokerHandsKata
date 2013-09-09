@@ -5,10 +5,10 @@ import (
     "github.com/coocood/jas"
     "fmt"
     "net/http"
-    "os"
+//    "os"
     "math/rand"
-    "time"
     "strconv"
+    "time"
 )
 
 type Hello struct {}
@@ -37,8 +37,12 @@ func main() {
     //output: GET /v1/hello
     http.Handle(router.BasePath, router)
 
-    // port detection added for Heroku's random port assignment
-    err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+    // PRODUCTION: port detection added for Heroku's random port assignment
+    //err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+
+    // TESTING: Hardcoded port assigned for testing
+    err := http.ListenAndServe(":8080", nil)
+
     if err != nil {
         panic(err)
     }
