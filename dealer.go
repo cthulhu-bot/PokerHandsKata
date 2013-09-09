@@ -9,11 +9,16 @@ import (
     "math/rand"
     "strconv"
     "time"
+    "strings"
 )
 
 type Hands struct {}
 
 type HandsId struct {}
+
+type Deck struct {
+    deck []string
+}
 
 // Request: GET /hands
 // Response: {data:single_poker_hand,error:null}
@@ -25,10 +30,23 @@ func (*Hands) Get (ctx *jas.Context) {
 // Request: GET /hands/number_of_poker_hands
 // Response: {data:multiple_poker_hands,error:null}
 func (*HandsId) Get (ctx *jas.Context) {
-    myRand := random(1,52)
+//    myRand := random(1,52)
+    d := new(Deck)
+    d.init()
+    var deck = strings.Join(d.deck, ",")
+
 //    numHands := ctx.Id
 
-    ctx.Data = strconv.Itoa(myRand)
+    ctx.Data = deck
+}
+
+func (*Deck) dealAHand() []int {
+    var hand []int
+    return hand
+}
+
+func (d *Deck) dealACard() int {
+    return 0
 }
 
 func main() {
@@ -57,3 +75,8 @@ func random(min, max int) int {
     return rand.Intn(max - min) + min
 }
 
+func (d *Deck) init() {
+    for i := 1; i <= 52; i++ {
+        (*d).deck = append(d.deck, strconv.Itoa(i))
+    }
+}
