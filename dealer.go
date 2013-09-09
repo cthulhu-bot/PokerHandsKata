@@ -6,7 +6,8 @@ import (
     "fmt"
     "net/http"
     "os"
-    "math/random"
+    "math/rand"
+    "time"
     "strconv"
 )
 
@@ -18,7 +19,7 @@ type PokerHands struct {}
 // Response: {"data":"hello world","error":null}
 func (*PokerHands) Get (ctx *jas.Context) {
     myRand := random(1,52)
-    ctx.Data = Itoa(myRand)
+    ctx.Data = strconv.Itoa(myRand)
 }
 
 func random(min, max int) int {
