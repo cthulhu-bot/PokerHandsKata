@@ -10,6 +10,7 @@ import (
     "strconv"
     "time"
     "strings"
+    "encoding/json"
 )
 
 type Hands struct {}
@@ -17,8 +18,15 @@ type Hands struct {}
 type HandsId struct {}
 
 type Deck struct {
-    deck []string
+    Cards []string
 }
+
+type Player struct {
+    Player string
+    Hand []string
+}
+
+type Response map[string]interface{}
 
 // Request: GET /hands
 // Response: {data:single_poker_hand,error:null}
@@ -33,7 +41,7 @@ func (*HandsId) Get (ctx *jas.Context) {
 //    myRand := random(1,52)
     d := new(Deck)
     d.init()
-    var deck = strings.Join(d.deck, ",")
+    var deck = strings.Join(d.Cards, ",")
 
 //    numHands := ctx.Id
 
@@ -49,7 +57,20 @@ func (d *Deck) dealACard() int {
     return 0
 }
 
+func handler(rw http.ResponseWriter, req *http.Request) {
+//    numHands := req.URL.Path[len("/foo/"):]
+    numHands := req.URL.Path
+    rw.Header().Set("Content-Type", "application/json")
+    fmt.Fprint(rw, Response{"success":true, "message":numHands})
+    return
+}
+
 func main() {
+    cards := []string{"2H"}
+    user := &Player{Player: "Frank", Hand: cards}
+    b, err := json.Marshal(user)
+    fmt.Println(string(b))
+
     fmt.Println("listening...")
 
     router := jas.NewRouter(new(Hands), new(HandsId))
@@ -57,13 +78,15 @@ func main() {
     fmt.Println(router.HandledPaths(true))
 
     //output: GET /hands
-    http.Handle(router.BasePath, router)
+//    http.Handle(router.BasePath, router)
+//    http.Handle(router.BasePath, handler)
+    http.HandleFunc("/foo/", handler)
 
     // PRODUCTION: port detection added for Heroku's random port assignment
     //err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
     // TESTING: Hardcoded port assigned for testing
-    err := http.ListenAndServe(":8080", nil)
+    err = http.ListenAndServe(":8080", nil)
 
     if err != nil {
         panic(err)
@@ -77,6 +100,6 @@ func random(min, max int) int {
 
 func (d *Deck) init() {
     for i := 1; i <= 52; i++ {
-        (*d).deck = append(d.deck, strconv.Itoa(i))
+        (*d).Cards = append(d.Cards, strconv.Itoa(i))
     }
 }
