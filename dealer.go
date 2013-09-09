@@ -26,7 +26,7 @@ func (*Hands) Get (ctx *jas.Context) {
 // Response: {data:multiple_poker_hands,error:null}
 func (*HandsId) Get (ctx *jas.Context) {
     myRand := random(1,52)
-    numHands = strconv.Atoi(ctx.id)
+//    numHands := ctx.Id
 
     ctx.Data = strconv.Itoa(myRand)
 }
