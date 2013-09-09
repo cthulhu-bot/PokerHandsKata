@@ -13,11 +13,13 @@ import (
 
 type Hello struct {}
 
-type PokerHands struct {}
+type Hands struct {}
 
-// Request: GET /v1/hello
-// Response: {"data":"hello world","error":null}
-func (*PokerHands) Get (ctx *jas.Context) {
+// Request: GET /hands
+// Response: {"data":"data","error":null}
+func (*Hands) Get (ctx *jas.Context) {
+    // GET /hands/:hands
+
     myRand := random(1,52)
     ctx.Data = strconv.Itoa(myRand)
 }
@@ -30,11 +32,11 @@ func random(min, max int) int {
 func main() {
     fmt.Println("listening...")
 
-    router := jas.NewRouter(new(PokerHands))
-    router.BasePath = "/v1/"
+    router := jas.NewRouter(new(Hands))
+    router.BasePath = "/"
     fmt.Println(router.HandledPaths(true))
 
-    //output: GET /v1/hello
+    //output: GET /hands
     http.Handle(router.BasePath, router)
 
     // PRODUCTION: port detection added for Heroku's random port assignment
