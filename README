@@ -1,1 +1,3 @@
-url:  http://murmuring-basin-5647.herokuapp.com/hands/[enter number of hands desired]
+The deal route will return 2 players and their respective poker hands
+
+url:  http://murmuring-basin-5647.herokuapp.com/deal
